@@ -42,7 +42,11 @@ function lotteryEntries(st, l) {
       if (o.createdAt >= l.createdAt && (!l.endsAt || o.createdAt <= l.endsAt)) ids.add(o.userId);
     }
   }
-  return [...ids].filter((id) => st.users.some((u) => u.id === id));
+  return [...ids].filter((id) => {
+    const u = st.users.find(x => x.id === id);
+    // KYC REQUIRED for lotteries
+    return u && u.kycStatus === 'approved';
+  });
 }
 
 export function registerAdmin(router) {

@@ -58,7 +58,7 @@ export async function render(ctx) {
         <section class="card">
           <strong class="row mb-s">${icon('truck')} ${t('checkout.delivery')}</strong>
           <div class="col">
-            <label class="radio-card">
+            <label class="radio-card ${['snapppay', 'azki', 'digipay'].includes(m.id) && (!S.me || S.me.kycStatus !== 'approved') ? 'disabled' : ''}">
               <input type="radio" name="delivery" value="pickup" ${sh.pickupEnabled === false ? 'disabled' : ''} ${S.me ? '' : 'checked'}>
               <span class="dot"></span>
               <span><span class="b">${t('checkout.pickup')}</span><span class="hint" >${t('checkout.pickupDesc')} ${t('checkout.pickupReady', { h: fmtNum(sh.handlingHours || 24) })}</span></span>
@@ -123,9 +123,9 @@ export async function render(ctx) {
           <div class="col" data-paymethods>
             ${(payMethods.length ? payMethods : [{ id: 'gateway', fa: 'درگاه بانکی', en: 'Bank gateway', note: '' }]).map((m, i) => h`
               <label class="radio-card">
-                <input type="radio" name="paymentMethod" value="${m.id}" ${i === 0 ? 'checked' : ''}>
+                <input type="radio" name="paymentMethod" value="${m.id}" ${i === 0 ? 'checked' : ''} ${['snapppay', 'azki', 'digipay'].includes(m.id) && (!S.me || S.me.kycStatus !== 'approved') ? 'disabled' : ''}>
                 <span class="dot"></span>
-                <span><span class="b">${isFa() ? m.fa : m.en}</span><span class="hint">${esc(m.note || '')}${m.id === 'gateway' && ordersCfg().gatewayMode === 'demo' ? ` — ${t('checkout.gatewayDemo')}` : ''}</span></span>
+                <span><span class="b">${isFa() ? m.fa : m.en}</span><span class="hint">${esc(m.note || '')}${m.id === 'gateway' && ordersCfg().gatewayMode === 'demo' ? ` — ${t('checkout.gatewayDemo')}` : ''}${['snapppay', 'azki', 'digipay'].includes(m.id) && (!S.me || S.me.kycStatus !== 'approved') ? ' <span style="color:var(--danger)">(نیازمند احراز هویت)</span>' : ''}</span></span>
               </label>`)}
           </div>
           ${!S.me ? h`<p class="hint mt-s" data-guest-cod-note hidden>${t('checkout.guestCodPickup')}</p>` : ''}

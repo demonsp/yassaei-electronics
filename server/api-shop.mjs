@@ -311,10 +311,12 @@ export function registerShop(router) {
     const accepted = V.bool(ctx.body?.acceptTerms, false);
     if (!accepted) throw badRequest('terms_required', 'پذیرش قوانین و مقررات برای ثبت سفارش الزامی است.');
     
-    // KYC Enforcement
-    if (ctx.user && ctx.user.kycStatus !== 'approved') {
-      throw forbidden('kyc_required', 'برای ثبت سفارش باید احراز هویت شما تأیید شده باشد.');
+    
+    // KYC Enforcement for Installments
+    if (['snapppay', 'azki', 'digipay'].includes(paymentMethod) && (!ctx.user || ctx.user.kycStatus !== 'approved')) {
+      throw forbidden('kyc_required', 'خرید اقساطی نیازمند تکمیل و تأیید احراز هویت است.');
     }
+
 
     // اطلاعات تماس مهمان (برای سفارش‌های بدون حساب کاربری)
     const guestName = !ctx.user ? (V.optStr(ctx.body?.guestName, { max: 60, field: 'نام' }) || '') : '';

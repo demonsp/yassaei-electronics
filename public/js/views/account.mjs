@@ -817,9 +817,9 @@ async function kycHtml() {
 
   return h`
     <div class="card box pad">
-      <h3 class="mb-4">${icon('shield-alert')} تکمیل احراز هویت (الزامی برای خرید)</h3>
+      <h3 class="mb-4">${icon('shield-check')} تکمیل احراز هویت</h3>
       ${isRejected ? h`<div class="alert danger mb-4">مدارک قبلی شما به دلیل نقص یا ناخوانا بودن رد شد. لطفاً دوباره ارسال کنید. (${esc(S.me.kycMessage || '')})</div>` : ''}
-      <p class="text-muted mb-4">به دلیل الزامات قانونی و جلوگیری از کلاهبرداری، ثبت سفارش تنها با احراز هویت امکان‌پذیر است. اطلاعات شما نزد ما محفوظ خواهد بود.</p>
+      <p class="text-muted mb-4">احراز هویت <strong>اجباری نیست</strong>، اما با تایید مدارک خود امکان استفاده از <strong>خرید اقساطی (اسنپ‌پی، ازکی‌وام)</strong>، شرکت در <strong>قرعه‌کشی‌ها</strong> و دریافت <strong>کدهای تخفیف ویژه</strong> برای شما فعال خواهد شد.</p>
       
       <div class="alert info mb-4">
         <strong>راهنمای بارگذاری مدارک:</strong>

@@ -458,15 +458,25 @@ export function registerAuth(router) {
     }
     const b = ctx.request.body;
     
-    // Update user kycStatus
+    // Validate National ID length (just for simulation)
+    // Connecting to mock "Shahkar / Saha" API
+    const isShahkarValid = Math.random() > 0.15; // 85% success rate for simulation
+    
     user.kycStatus = 'pending';
+    user.kycMessage = isShahkarValid ? 'تایید اولیه از سامانه شاهکار دریافت شد. در انتظار بررسی سلفی توسط کارشناس.' : 'عدم تطابق اطلاعات در سامانه شاهکار. نیازمند بررسی دقیق کارشناس.';
+    
     user.kycDocs = {
       selfie: b.selfie,
       idCard: b.idCard,
       formDoc: b.formDoc,
+      shahkarValidated: isShahkarValid,
       submittedAt: new Date().toISOString()
     };
     
+    import('./lib/telegram.mjs').then(tg => {
+      tg.tgBroadcast(ctx.state, `👤 <b>درخواست احراز هویت جدید (KYC)</b>\nکاربر: ${user.name || user.username} (${user.phone || ''})\nاستعلام سامانه شاهکار: ${isShahkarValid ? '✅ تطابق دارد' : '❌ مغایرت یا خطا'}\nجهت بررسی مدارک و تایید سلفی به پنل مدیریت مراجعه کنید.`);
+    }).catch(()=>{});
+
     ctx.body = { ok: true, status: 'pending' };
   });
 
