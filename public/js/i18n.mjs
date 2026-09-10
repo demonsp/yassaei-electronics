@@ -294,7 +294,7 @@ const fa = {
   'home.point3': 'ارسال به سراسر ایران',
   'home.point4': 'تحویل حضوری رایگان',
   'home.categories': 'دسته‌بندی‌ها',
-  'home.categoriesSub': 'از کابل و قاب تا گجت‌های پوشیدنی',
+  'home.categoriesSub': 'از مقاومت و آی‌سی تا پروژکتور و محافظ برق',
   'home.featured': 'پیشنهاد ویژه',
   'home.featuredSub': 'کالاهایی که خودمان استفاده می‌کنیم و پیشنهاد می‌دهیم',
   'home.bestSellers': 'پرفروش‌ترین‌ها',
