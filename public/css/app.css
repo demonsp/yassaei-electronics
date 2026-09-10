@@ -11,18 +11,18 @@
 /* ── توکن‌ها ─────────────────────────────────────────────── */
 :root{
   --accent:#f59e0b;
-  --accent-2:#1b7f9e;
-  --accent-3:#7fd3ec;
-  --accent-soft:rgba(49,175,212,.14);
-  --accent-ink:#04222c;
+  --accent-2:#b45309;
+  --accent-3:#fcd34d;
+  --accent-soft:rgba(245,158,11,.16);
+  --accent-ink:#201200;
 
-  --bg:#060c15;
-  --bg-grad-1:#0a1524;
-  --bg-grad-2:#06111c;
-  --surface:#0e1a2b;
-  --surface-2:#132237;
-  --surface-3:#1a2c45;
-  --border:rgba(255,255,255,.085);
+  --bg:#0b0a08;
+  --bg-grad-1:#17130b;
+  --bg-grad-2:#0b0a08;
+  --surface:#161310;
+  --surface-2:#1e1a15;
+  --surface-3:#292318;
+  --border:#332b1f;
   --border-strong:rgba(255,255,255,.16);
   --text:#e9eff8;
   --text-2:#c3d0e2;
@@ -37,7 +37,7 @@
   --info:#3b82f6;    --info-soft:rgba(59,130,246,.14);
   --violet:#a78bfa;  --violet-soft:rgba(167,139,250,.14);
 
-  --radius:16px; --radius-sm:11px; --radius-lg:24px; --radius-pill:999px;
+  --radius:10px; --radius-sm:8px; --radius-lg:16px; --radius-pill:999px;
   --gap:14px; --container:1320px;
   --header-h:66px; --nav-h:46px; --topbar-h:34px;
   --font:'Vazirmatn','Segoe UI',Tahoma,'Iranian Sans',system-ui,-apple-system,sans-serif;
@@ -1295,3 +1295,8 @@ html[data-variant="fresh"] .icon-btn:hover{transform:translateY(-1px)}
 html[data-variant="fresh"] .site-header{box-shadow:0 6px 24px rgba(0,0,0,.18)}
 html[data-variant="fresh"] .product-card{border-radius:18px}
 html[data-variant="fresh"] .bottom-nav{border-radius:20px 20px 0 0}
+
+/* ── هویت بصری یاسایی (متفاوت از پروژه ۱): تصاویر جای‌نگه تخت، لبه‌های تیزتر ── */
+.ph-img{background:transparent;border-radius:8px}
+.prod-card .thumb,.thumb{border-radius:10px}
+.hero{border-radius:14px}

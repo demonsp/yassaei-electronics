@@ -8,7 +8,7 @@ import { html as h, icon } from './lib/dom.mjs';
 import { act } from './actions.mjs';
 
 function coords() {
-  const c = store().mapCoords || { lat: 35.7336, lng: 51.4986 };
+  const c = store().mapCoords || { lat: 35.731026, lng: 51.488461 };
   return { lat: Number(c.lat), lng: Number(c.lng) };
 }
 

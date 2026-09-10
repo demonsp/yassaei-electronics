@@ -22,7 +22,7 @@ export const DEFAULT_SETTINGS = {
       { day: 'جمعه', fa: 'جمعه', en: 'Friday', time: '۱۶:۰۰ تا ۲۱:۰۰', timeEn: '16:00 – 21:00' },
     ],
     socials: { instagram: 'https://instagram.com/jam.yassaei', telegram: 'https://t.me/yassaei_shop_bot', eitaa: '', whatsapp: '' },
-    mapCoords: { lat: 35.7336, lng: 51.4986 },
+    mapCoords: { lat: 35.731026, lng: 51.488461 },
     enamad: '',
     established: 1396,
     description: 'فروشگاه تخصصی لوازم الکترونیک و الکتریکی‌های پوشیدنی در تهران؛ با ضمانت اصالت کالا، مهلت تست و ارسال به سراسر ایران.',

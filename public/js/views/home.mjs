@@ -41,26 +41,12 @@ export async function render() {
 
   return h`
     ${bannerSlot('home_hero', adInSlot('home_hero'))}
-    ${feat('partners') && (S.settings.partners?.items?.length) ? h`
-    <section class="partners-sec partners-top">
-      ${sectionHead({ titleIcon: 'store', title: t('home.partnersTitle') })}
-      <div class="marquee" aria-label="${t('home.partnersTitle')}">
-        <div class="marquee-track">
-          ${[...S.settings.partners.items, ...S.settings.partners.items].map((p) => {
-            const br = (S.brands || []).find((b) => b.name === p.fa || (p.en && (b.nameEn === p.en || b.nameEn?.toLowerCase() === p.en.toLowerCase())));
-            const href = br ? `#/products?brand=${br.id}` : `#/search?q=${encodeURIComponent(p.fa)}`;
-            return h`<a class="partner-chip" href="${href}" title="${isFa() ? p.fa : (p.en || p.fa)}">
-              <img class="pt-logo" src="/assets/img/brands/${br ? br.id : 'no_name'}.svg" alt="" loading="lazy" decoding="async">
-              <b>${isFa() ? p.fa : (p.en || p.fa)}</b></a>`;
-          }).join('')}
-        </div>
-      </div>
-    </section>` : ''}
+    
 
     <section class="hero">
-      <div class="hero-bg"><img src="/assets/img/hero-port.svg" alt="" decoding="async"></div>
+      <div class="hero-bg"><img src="/assets/img/hero-circuit.svg" alt="" decoding="async"></div>
       <div class="hero-inner">
-        <span class="hero-kicker">${icon('anchor')} ${t('home.heroKicker')}</span>
+        <span class="hero-kicker">${icon('zap')} ${t('home.heroKicker')}</span>
         <h1 class="hero-title">${t('home.heroTitle')}</h1>
         <p class="hero-text">${t('home.heroText')}</p>
         <div class="hero-cta">
@@ -82,6 +68,22 @@ export async function render() {
       ${sectionHead({ titleIcon: 'layers', title: t('home.categories'), sub: t('home.categoriesSub'), link: '#/products', linkLabel: t('common.showAll') })}
       <div class="cat-grid">${topCats.map((c) => catCard(c, c.count ?? null))}</div>
     </section>
+
+    ${feat('partners') && (S.settings.partners?.items?.length) ? h`
+    <section class="partners-sec partners-top">
+      ${sectionHead({ titleIcon: 'store', title: t('home.partnersTitle') })}
+      <div class="marquee" aria-label="${t('home.partnersTitle')}">
+        <div class="marquee-track">
+          ${[...S.settings.partners.items, ...S.settings.partners.items].map((p) => {
+            const br = (S.brands || []).find((b) => b.name === p.fa || (p.en && (b.nameEn === p.en || b.nameEn?.toLowerCase() === p.en.toLowerCase())));
+            const href = br ? `#/products?brand=${br.id}` : `#/search?q=${encodeURIComponent(p.fa)}`;
+            return h`<a class="partner-chip" href="${href}" title="${isFa() ? p.fa : (p.en || p.fa)}">
+              <img class="pt-logo" src="/assets/img/brands/${br ? br.id : 'no_name'}.svg" alt="" loading="lazy" decoding="async">
+              <b>${isFa() ? p.fa : (p.en || p.fa)}</b></a>`;
+          }).join('')}
+        </div>
+      </div>
+    </section>` : ''}
 
     ${list.length ? h`
     <section class="section">
