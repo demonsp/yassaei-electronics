@@ -1713,7 +1713,7 @@ const en = {
   'home.point3': 'Shipping across Iran',
   'home.point4': 'Free in-store pickup',
   'home.categories': 'Categories',
-  'home.categoriesSub': 'From cables and cases to wearables',
+  'home.categoriesSub': 'From resistors and ICs to projectors and surge protectors',
   'home.featured': 'Featured picks',
   'home.featuredSub': 'Items we use and recommend ourselves',
   'home.bestSellers': 'Best sellers',
