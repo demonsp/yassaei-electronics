@@ -1,8 +1,6 @@
 // ─────────────────────────────────────────────────────────────
 //  رجیستری اکشن‌های واگذارشده (event delegation)
 // ─────────────────────────────────────────────────────────────
-import { field } from "./components.mjs";
-import { closeModal } from "./ui.mjs";
 import { S, addToCart, toggleWishlist, toggleCompare, toggleAlert, hasAlert, feat, setPref } from './state.mjs';
 import { t, lang } from './i18n.mjs';
 import { toast, toastSuccess, toastError, toastApiError, modal, lightbox, confirmDialog, withBusy, uiClickSound } from './ui.mjs';
@@ -352,7 +350,7 @@ act('pdp-lower-price', (e, el) => {
 
 act('submit-lower-price', async (e, form) => {
   e.preventDefault();
-  const { withBusy, toastSuccess, toastApiError, closeModal } = await import('./ui.mjs');
+  const { withBusy, toastSuccess, toastApiError } = await import('./ui.mjs');
   await withBusy(form, async () => {
     try {
       await api.post('/api/reports/lower-price', {
@@ -361,7 +359,7 @@ act('submit-lower-price', async (e, form) => {
         url: form.url.value
       });
       toastSuccess('با تشکر! گزارش شما ثبت شد.');
-      closeModal();
+      form.closest('[role="dialog"]')?.querySelector('[data-lx]')?.click();
     } catch (err) {
       toastApiError(err);
     }
