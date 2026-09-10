@@ -153,6 +153,7 @@ export function registerShop(router) {
     const qty = V.int(ctx.body?.qty, { min: 1, max: 99, field: 'تعداد', def: 1 });
     const p = ctx.state.products.find((x) => x.id === productId);
     if (!p || p.active === false) throw notFound('product_not_found', 'کالا یافت نشد.');
+    if (!Number(p.price)) throw new HttpError(422, 'service_item', 'این مورد خدماتی/استعلامی است و به سبد اضافه نمی‌شود — لطفاً با مغازه تماس بگیر.');
     const cart = await db.tx((st) => {
       const c = getCart({ ...ctx, state: st }, true);
       const line = c.items.find((i) => i.productId === productId);

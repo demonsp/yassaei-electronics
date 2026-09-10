@@ -43,10 +43,11 @@ export function productCard(p, { quick = null } = {}) {
       ${showStock ? h`<div class="pc-stock ${stockCls}"><span class="dot"></span>${stock <= 0 ? t('card.outOfStock') : stock <= 3 ? t('common.lowStock') : t('common.inStock')}</div>` : ''}
       <div class="pc-price">
         ${p.oldPrice > p.price ? h`<span class="pc-old">${fmtMoney(p.oldPrice)}</span>` : ''}
-        <span class="pc-now">${fmtMoney(p.price)}</span>
+        ${p.price ? h`<span class="pc-now">${fmtMoney(p.price)}</span>` : h`<span class="pc-now pc-inquire">${t('price.inquire')}</span>`}
       </div>
       <div class="pc-actions">
-        <button type="button" class="btn btn-primary" data-act="add-cart" data-id="${p.id}" ${stock <= 0 ? 'disabled' : ''}>${icon('cart')} ${t('card.addToCart')}</button>
+        ${p.price ? h`<button type="button" class="btn btn-primary" data-act="add-cart" data-id="${p.id}" ${stock <= 0 ? 'disabled' : ''}>${icon('cart')} ${t('card.addToCart')}</button>`
+                  : h`<a class="btn btn-outline" href="#/product/${p.id}">${icon('phone')} ${t('price.inquireShort')}</a>`}
       </div>
     </div>
   </article>`;

@@ -273,4 +273,4 @@ export function titleCase(s) {
 }
 
 /** برچسب بیلد جاری — برای نمایش در پنل ادمین و status */
-export const BUILD = 'ys-v5';
+export const BUILD = 'ys-v6';

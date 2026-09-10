@@ -118,6 +118,18 @@ export async function render() {
     </section>` : ''}
 
     <section class="section">
+      <div class="card pf-card">
+        <strong>${icon('search')} ${t('home.partFinder')}</strong>
+        <p class="muted small mt-s">${t('home.partFinderText')}</p>
+        <div class="row row-wrap mt-s">
+          ${S.settings?.store?.phone ? h`<a class="btn btn-primary btn-sm" href="tel:${S.settings.store.phone}">${icon('phone')} ${t('home.partFinderCta')}: <bdi>${fmtTel(S.settings.store.phone)}</bdi></a>` : ''}
+          <a class="btn btn-outline btn-sm" href="#/pages/contact">${icon('chat')} ${t('nav.contact')}</a>
+          ${(S.settings?.store?.socials?.instagram) ? h`<a class="btn btn-ghost btn-sm" href="${S.settings.store.socials.instagram}" target="_blank" rel="noopener">${icon('camera')} ${t('social.instagram')}</a>` : ''}
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
       ${sectionHead({ titleIcon: 'shield', title: t('home.whyUs'), sub: t('home.whyUsSub') })}
       <div class="pwa-grid">
         <div class="pwa-card"><span class="pwa-ic">${icon('shield')}</span><div><div class="b">${t('home.point1')}</div><div class="muted small">${isFa() ? 'همهٔ کالاها پیش از فروش تست می‌شوند و با فاکتور رسمی و گارانتی فروشگاه تحویل می‌گیرید.' : 'Every item is tested before sale and delivered with an official invoice and store warranty.'}</div></div></div>
