@@ -87,10 +87,13 @@ export function mePayload(state, user) {
     mustChangePassword: !!user.mustChangePassword,
     twoFA: { enabled: !!user.twoFA?.enabled, method: user.twoFA?.method || null, methods: user.twoFA?.methods || [] },
     points: user.points || 0,
+    referralCode: user.referralCode || user.id.substring(0, 6).toUpperCase(),
+    referralCount: state.users.filter((u) => u.referredBy === user.id).length,
     kycStatus: user.kycStatus || 'none',
+
     kycMessage: user.kycMessage || '',
     badges: computeBadges(state, user),
-    referralCode: user.referralCode || '',
+    
     prefs: user.prefs || {},
     notificationsPrefs: user.notificationsPrefs || {},
     consent: user.consent || {},
@@ -193,6 +196,14 @@ export function registerAuth(router) {
     const password = V.password(ctx.body?.password);
     const accepted = V.bool(ctx.body?.acceptTerms);
     if (!accepted) throw badRequest('terms_required', 'پذیرش قوانین و مقررات و حریم خصوصی الزامی است.');
+    
+    const hearAboutUs = V.optStr(ctx.body?.hearAboutUs, { max: 50 });
+    const refCode = V.optStr(ctx.body?.referralCode, { max: 20 });
+    let referredBy = null;
+    if (refCode) {
+      const referrerUser = state.users.find(u => (u.referralCode || u.id.substring(0, 6).toUpperCase()) === refCode.toUpperCase());
+      if (referrerUser) referredBy = referrerUser.id;
+    }
     if (banHit(state, [ctx.body?.username, ctx.body?.phone, ctx.body?.email])) throw bannedErr();
 
     let username = ''; let phone = ''; let email = ''; let code = '';
@@ -211,8 +222,7 @@ export function registerAuth(router) {
       username = V.optStr(ctx.body?.username) || `user_${sha256(email).slice(0, 6)}`;
       phone = V.optStr(ctx.body?.phone ? V.phone(ctx.body.phone) : '');
     }
-    const referral = V.optStr(ctx.body?.referral, { max: 16, field: 'کد معرف' }).toUpperCase();
-
+    
     const result = await db.tx((st) => {
       if (st.users.some((u) => u.username === username)) throw conflict('username_taken', 'این نام کاربری قبلاً گرفته شده است.');
       if (phone && st.users.some((u) => u.phone === phone)) throw conflict('phone_taken', 'این شمارهٔ موبایل قبلاً ثبت شده است.');
@@ -233,16 +243,15 @@ export function registerAuth(router) {
         prefs: { theme: st.settings.theme?.mode || 'dark', locale: 'fa', density: 'normal' },
         consent: { termsAt: nowISO(), privacyAt: nowISO() },
         notificationsPrefs: { marketing: true, orders: true, restock: true },
-        referralCode: (username.slice(0, 4).toUpperCase() + Math.floor(Math.random() * 900 + 100)),
-        referredBy: null, points: 0, status: 'active',
+        referralCode: uid(6).toUpperCase(),
+        referredBy: referredBy, hearAboutUs: hearAboutUs, points: 0, status: 'active',
         createdAt: nowISO(), lastLoginAt: null, loginCount: 0,
       };
-      if (referral) {
-        const ref = st.users.find((u) => u.referralCode === referral && u.id !== user.id);
+      if (referredBy) {
+        const ref = st.users.find((u) => u.id === referredBy);
         if (ref) {
-          user.referredBy = ref.id;
-          ref.points = (ref.points || 0) + 50;
-          user.points = (user.points || 0) + 50;
+          ref.points = (ref.points || 0) + 10;
+          user.points = (user.points || 0) + 10;
         }
       }
       st.users.push(user);
