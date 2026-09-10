@@ -1,5 +1,5 @@
 /* سرویس‌ورکر یاسایی — پوستهٔ آفلاین + کش هوشمند */
-const VERSION = 'ys-v6';
+const VERSION = 'ys-v7';
 const SHELL = `${VERSION}-shell`;
 const RUNTIME = `${VERSION}-runtime`;
 const DATA = `${VERSION}-data`;

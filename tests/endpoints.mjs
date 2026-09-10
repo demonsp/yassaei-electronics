@@ -35,6 +35,9 @@ async function req(jar, method, path, body) {
   return { status: res.status, json, text };
 }
 
+const solveSvgCap = (svg) => { const fa = '۰۱۲۳۴۵۶۷۸۹'; const txt = [...String(svg).matchAll(/<text[^>]*>([^<]*)<\/text>/g)].map((m) => m[1]).join('').replace(/&#160;/g, ' '); const en = txt.replace(/[۰-۹]/g, (c) => String(fa.indexOf(c))); const m = en.match(/(\d+)\s*([+×])\s*(\d+)/); if (!m) return null; return m[2] === '×' ? Number(m[1]) * Number(m[3]) : Number(m[1]) + Number(m[3]); };
+const capFor = async (cl) => { const c = await cl.get('/api/captcha'); if (!c.json || c.json.disabled) return undefined; const v = await cl.post('/api/captcha/verify', { id: c.json.id, answer: solveSvgCap(c.json.svg) }); return v.json?.token; };
+
 const router = new Router();
 registerCatalog(router); registerAuth(router); registerShop(router); registerAdmin(router);
 
@@ -42,7 +45,9 @@ registerCatalog(router); registerAuth(router); registerShop(router); registerAdm
   console.log('\n═══ پوشش مسیرها (GET) ═══');
   const admin = new Jar();
   await req(admin, 'GET', '/api/bootstrap');
-  const login = await req(admin, 'POST', '/api/auth/login', { identifier: 'admin', password: 'Yassaei@1404' });
+  const capL = await req(admin, 'GET', '/api/captcha');
+  const capLV = capL.json?.disabled ? { json: {} } : await req(admin, 'POST', '/api/captcha/verify', { id: capL.json.id, answer: solveSvgCap(capL.json.svg) });
+  const login = await req(admin, 'POST', '/api/auth/login', { identifier: 'admin', password: 'Yassaei@1404', captchaToken: capLV.json?.token });
   if (login.status !== 200) { console.error('ورود مدیر ناموفق بود', login.json); process.exit(2); }
 
   const products = await req(admin, 'GET', '/api/admin/products?limit=3');
