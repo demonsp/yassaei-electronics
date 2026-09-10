@@ -18,9 +18,21 @@ export async function render(ctx) {
   if (!S.cart.items?.length) {
     return emptyState({ icon: 'cart', title: t('cart.empty'), text: t('cart.emptyText'), action: { href: '#/products', label: t('cart.goShopping') } });
   }
-  if (!S.me && !feat('guestCheckout')) {
+  
+  if (!S.me) {
     return emptyState({ icon: 'user', title: t('checkout.loginRequired'), action: { href: '#/auth?next=checkout', label: t('nav.login') } });
   }
+
+  // KYC Check
+  if (S.me.kycStatus !== 'approved') {
+    return emptyState({
+      icon: 'shield-alert',
+      title: 'احراز هویت ناقص است',
+      text: 'جهت جلوگیری از تقلب و با توجه به الزامات قانونی، ثبت سفارش نیازمند تأیید هویت است.',
+      action: { href: '#/account/kyc', label: 'تکمیل احراز هویت' }
+    });
+  }
+
   const sh = ship();
   const zones = sh.zones || [];
   const addresses = S.me?.addresses || [];
@@ -69,7 +81,14 @@ export async function render(ctx) {
 
             <div class="divider"></div>
             <strong class="row mb-s">${icon('pin')} ${t('checkout.address')}</strong>
-            ${addresses.length ? h`
+            ${!S.me ? h`
+              <div class="form-grid mt-s">
+                ${field({ label: isFa() ? 'استان' : 'Province', name: 'guestProvince' })}
+                ${field({ label: isFa() ? 'شهر' : 'City', name: 'guestCity' })}
+                ${field({ label: isFa() ? 'آدرس کامل (خیابان، کوچه، پلاک، واحد)' : 'Full Address', name: 'guestAddress', span2: true })}
+                ${field({ label: isFa() ? 'کد پستی (اختیاری)' : 'Postal Code', name: 'guestZip', type: 'tel', attrs: 'inputmode="numeric"' })}
+              </div>
+            ` : addresses.length ? h`
               <div class="col" data-addresses>
                 ${addresses.map((a, i) => h`
                   <label class="addr-card">
@@ -80,8 +99,12 @@ export async function render(ctx) {
                       <span class="hint">${esc(a.receiver || '')} · ${fmtTel(a.phone || '')}<br>${esc(a.street || '')}${a.city ? `، ${esc(a.city)}` : ''}${a.postal ? ` · ${esc(a.postal)}` : ''}</span>
                     </span>
                   </label>`)}
-              </div>` : h`<p class="notice notice-warn">${icon('alert')}<span>${t('checkout.noAddress')}</span></p>`}
-            <button type="button" class="btn btn-ghost btn-sm mt-s" data-act="addr-add">${icon('plus')} ${t('checkout.addAddress')}</button>
+              </div>
+              <button type="button" class="btn btn-ghost btn-sm mt-s" data-act="addr-add">${icon('plus')} ${t('checkout.addAddress')}</button>
+            ` : h`
+              <p class="notice notice-warn">${icon('alert')}<span>${t('checkout.noAddress')}</span></p>
+              <button type="button" class="btn btn-ghost btn-sm mt-s" data-act="addr-add">${icon('plus')} ${t('checkout.addAddress')}</button>
+            `}
           </div>
         </section>
 
@@ -172,7 +195,13 @@ export function mount(root) {
     e.preventDefault();
     const fd = new FormData(f);
     if (!fd.get('acceptTerms')) { toastError(t('form.termsRequired')); return; }
-    if (fd.get('delivery') === 'courier' && !fd.get('addressId')) { toastError(t('checkout.noAddress')); return; }
+    if (S.me && fd.get('delivery') === 'courier' && !fd.get('addressId')) { toastError(t('checkout.noAddress')); return; }
+    if (!S.me && fd.get('delivery') === 'courier') {
+      if (!fd.get('guestProvince') || !fd.get('guestCity') || !fd.get('guestAddress')) {
+        toastError(isFa() ? 'لطفاً آدرس پستی را کامل وارد کنید.' : 'Please enter your shipping address.');
+        return;
+      }
+    }
     if (!S.me) {
       if (!String(fd.get('guestName') || '').trim()) { toastError(t('checkout.guestNameRequired')); return; }
       if (!/^09\d{9}$/.test(String(fd.get('guestPhone') || '').replace(/[\s-]/g, ''))) { toastError(t('checkout.guestPhoneInvalid')); return; }
@@ -190,7 +219,7 @@ export function mount(root) {
         if (r.me) { S.me = r.me; refreshMe(); }
         try { sessionStorage.setItem('bm_last_order', JSON.stringify(r.order)); } catch { /* noop */ }
         await loadCart();
-        if (r.needsPayment && r.paymentMethod === 'gateway') navigate(`#/pay/${r.order.id}`);
+        if (r.needsPayment && ['gateway', 'snapppay', 'azki', 'digipay'].includes(r.paymentMethod)) navigate(`#/pay/${r.order.id}`);
         else navigate(`#/checkout/done/${r.order.id}`);
       } catch (err) {
         toastApiError(err);

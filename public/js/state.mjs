@@ -135,7 +135,7 @@ export function applyPrefs() {
   let mode = p.theme || th.mode || 'dark';
   if (mode === 'auto') mode = window.matchMedia?.('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
   root.setAttribute('data-mode', mode);
-  root.setAttribute('data-theme', mode);
+  root.setAttribute('data-theme', th.theme || 'default');
   root.setAttribute('color-scheme', mode);
 
   // پوستهٔ تهرانی و سبک پس‌زمینه

@@ -31,6 +31,7 @@ const SECTIONS = [
   { id: 'reviews', icon: 'star', label: () => t('acc.reviews') },
   { id: 'feedback', icon: 'flag', label: () => t('acc.feedback') },
   { id: 'profile', icon: 'user', label: () => t('acc.profile') },
+  { id: 'kyc', icon: 'shield-check', label: () => 'احراز هویت (KYC)' },
   { id: 'security', icon: 'shield', label: () => t('acc.security') },
   { id: 'prefs', icon: 'settings', label: () => t('acc.prefs') },
   { id: 'data', icon: 'download', label: () => t('acc.data') },
@@ -75,6 +76,9 @@ async function sectionHtml(sec, ctx) {
     case 'reviews': return reviewsHtml();
     case 'feedback': return feedbackHtml();
     case 'profile': return profileHtml();
+    
+    case 'kyc':
+      return kycHtml();
     case 'security': return securityHtml();
     case 'prefs': return prefsHtml();
     case 'data': return dataHtml();
@@ -784,3 +788,63 @@ export function mount(root, ctx) {
 }
 
 export const title = (ctx) => t('acc.title');
+
+
+async function kycHtml() {
+  const isApproved = S.me.kycStatus === 'approved';
+  const isPending = S.me.kycStatus === 'pending';
+  const isRejected = S.me.kycStatus === 'rejected';
+  
+  if (isApproved) {
+    return h`
+      <div class="card box pad text-center">
+        ${icon('check-circle', {style: 'color:var(--success);width:64px;height:64px;'})}
+        <h3 class="mt-4 mb-2">احراز هویت تأیید شده است</h3>
+        <p class="text-muted">شما می‌توانید بدون محدودیت از تمامی خدمات و ثبت سفارش استفاده کنید.</p>
+      </div>
+    `;
+  }
+  
+  if (isPending) {
+    return h`
+      <div class="card box pad text-center">
+        ${icon('clock', {style: 'color:var(--warning);width:64px;height:64px;'})}
+        <h3 class="mt-4 mb-2">در حال بررسی مدارک</h3>
+        <p class="text-muted">مدارک شما دریافت شده و در صف بررسی توسط کارشناسان یاسایی الکترونیک قرار دارد. لطفاً شکیبا باشید.</p>
+      </div>
+    `;
+  }
+
+  return h`
+    <div class="card box pad">
+      <h3 class="mb-4">${icon('shield-alert')} تکمیل احراز هویت (الزامی برای خرید)</h3>
+      ${isRejected ? h`<div class="alert danger mb-4">مدارک قبلی شما به دلیل نقص یا ناخوانا بودن رد شد. لطفاً دوباره ارسال کنید. (${esc(S.me.kycMessage || '')})</div>` : ''}
+      <p class="text-muted mb-4">به دلیل الزامات قانونی و جلوگیری از کلاهبرداری، ثبت سفارش تنها با احراز هویت امکان‌پذیر است. اطلاعات شما نزد ما محفوظ خواهد بود.</p>
+      
+      <div class="alert info mb-4">
+        <strong>راهنمای بارگذاری مدارک:</strong>
+        <ol class="mt-2 mb-0" style="padding-right: 20px;">
+          <li>فرم تعهدنامه را <a href="/assets/docs/kyc-form.pdf" target="_blank" download style="font-weight:bold;text-decoration:underline;">دانلود کنید</a>، پرینت گرفته و امضا کنید (یا به صورت دیجیتال پر کنید).</li>
+          <li>یک عکس واضح از کارت ملی یا شناسنامه خود بگیرید.</li>
+          <li>یک عکس سلفی در حالی که کارت ملی و فرم تعهدنامه را در دست دارید بگیرید.</li>
+        </ol>
+      </div>
+
+      <form class="stack grid gap-3" onsubmit="event.preventDefault(); window.submitKyc(event.target);">
+        <div class="field">
+          <label>عکس سلفی (همراه با کارت ملی و فرم)</label>
+          <input type="file" name="selfie" accept="image/*" required class="input">
+        </div>
+        <div class="field">
+          <label>عکس کارت ملی یا شناسنامه</label>
+          <input type="file" name="idCard" accept="image/*" required class="input">
+        </div>
+        <div class="field">
+          <label>فرم امضا شده تعهدنامه (PDF یا عکس)</label>
+          <input type="file" name="formDoc" accept="image/*,.pdf" required class="input">
+        </div>
+        <button type="submit" class="btn primary mt-2">${icon('upload')} ارسال مدارک</button>
+      </form>
+    </div>
+  `;
+}

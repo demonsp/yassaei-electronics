@@ -87,6 +87,8 @@ export function mePayload(state, user) {
     mustChangePassword: !!user.mustChangePassword,
     twoFA: { enabled: !!user.twoFA?.enabled, method: user.twoFA?.method || null, methods: user.twoFA?.methods || [] },
     points: user.points || 0,
+    kycStatus: user.kycStatus || 'none',
+    kycMessage: user.kycMessage || '',
     badges: computeBadges(state, user),
     referralCode: user.referralCode || '',
     prefs: user.prefs || {},
@@ -446,6 +448,28 @@ export function registerAuth(router) {
   });
 
   // ── اطلاعات کاربر ───────────────────────────────────────
+  
+  // KYC Upload Endpoint
+  router.post('/api/user/kyc', async (ctx) => {
+    const user = ctx.state.user;
+    if (!user) {
+      ctx.status = 401;
+      return;
+    }
+    const b = ctx.request.body;
+    
+    // Update user kycStatus
+    user.kycStatus = 'pending';
+    user.kycDocs = {
+      selfie: b.selfie,
+      idCard: b.idCard,
+      formDoc: b.formDoc,
+      submittedAt: new Date().toISOString()
+    };
+    
+    ctx.body = { ok: true, status: 'pending' };
+  });
+
   router.get('/api/me', async (ctx) => {
     ctx.requireUser();
     sendJson(ctx.res, 200, { ok: true, me: mePayload(ctx.state, ctx.user) });
