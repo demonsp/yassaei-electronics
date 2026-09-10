@@ -180,7 +180,7 @@ export async function render() {
 
     <section class="section">
       <div class="card">
-        <div class="minimap" data-act="open-map"" role="button" tabindex="0" aria-label="${t('contact.mapTitle')}">
+        <div class="minimap" data-act="open-map" role="button" tabindex="0" aria-label="${t('contact.mapTitle')}">
           ${raw(minimapSvg())}
           <span class="minimap-hint">${icon('pin')} ${t('contact.mapHint')}</span>
         </div>
