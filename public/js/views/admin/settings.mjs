@@ -58,7 +58,7 @@ const FIELDS = {
   ],
   theme: [
     { k: 'theme', label: () => L('قالب ظاهری (تم)', 'Design Theme'), type: 'select', options: () => [
-      ['default', L('پیش‌فرض (یاسایی/گرین اپل)', 'Default')],
+      ['default', L('پیش‌فرض (یاسایی/فروشگاه)', 'Default')],
       ['tehran-nights', L('شب‌های تهران', 'Tehran Nights')],
       ['milad', L('برج میلاد', 'Milad Tower')],
       ['azadi', L('میدان آزادی', 'Azadi Square')],
