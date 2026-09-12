@@ -25,11 +25,12 @@ import { initRouter, navigate, refresh, parseHash } from './router.mjs';
 import { initChat, openChat } from './chat.mjs';
 import './map.mjs';
 import { catName, brandName, prodName, BUILD } from './state.mjs';
+setTimeout(hideWelcome, 10000); // Top-level failsafe
 import { bannerHtml, minimapSvg } from './components.mjs';
 
 // ── راه‌اندازی ──────────────────────────────────────────────
 async function init() {
-  setTimeout(hideWelcome, 10000); // Failsafe
+  
   installDelegation();
   wireStaticControls();
   await boot();
@@ -204,7 +205,8 @@ function renderNav() {
         // Also let's show top brands
         const brands = S.brands.slice(0, 10);
         
-        let html = '<div class="mega-sub-grid">';
+        let html = `<a href="#/category/${catId}" class="mega-see-all">${t('nav.allCategories')} ${catName(S.categories.find(c => c.id === catId) || {})} ${icon('chevron-left')}</a>`;
+        html += '<div class="mega-sub-grid">';
         
         if (subCats.length) {
           html += '<div class="mega-sub-col"><h3>دسته‌بندی‌های زیرمجموعه</h3>';
@@ -215,9 +217,9 @@ function renderNav() {
         }
         
         // Just show brands as an example column to fill the space
-        html += '<div class="mega-sub-col"><h3>برندهای پرطرفدار</h3>';
+        html += '<div class="mega-sub-col"><h3>برندهای پرطرفدار این دسته</h3>';
         brands.forEach(b => {
-          html += `<a href="#/products?brand=${b.id}">${brandName(b)}</a>`;
+          html += `<a href="#/products?cat=${catId}&brand=${b.id}">${brandName(b)}</a>`;
         });
         html += '</div>';
         
