@@ -139,6 +139,7 @@ const FIELDS = {
     { k: 'title', label: () => L('عنوان سایت', 'Site title'), type: 'text' },
     { k: 'description', label: () => L('توضیحات متا', 'Meta description'), type: 'textarea' },
     { k: 'keywords', label: () => L('کلیدواژه‌ها', 'Keywords'), type: 'text' },
+    { k: 'googleSiteVerification', label: () => L('کد تأیید سرچ کنسول گوگل', 'Google Site Verification Code'), type: 'text' },
   ],
   currency: [
     { k: 'code', label: () => L('کد ارز', 'Currency code'), type: 'text' },

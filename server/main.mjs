@@ -490,8 +490,17 @@ const server = http.createServer(async (req, res) => {
           ent = indexCache = { mtime: stat.mtimeMs, buf: fs.readFileSync(indexHtml), gz: null };
           ent.gz = zlib.gzipSync(ent.buf, { level: 6 });
         }
+        
+        const gscCode = db.raw.settings?.seo?.googleSiteVerification;
+        let buf = ent.buf;
+        if (gscCode) {
+          const content = buf.toString('utf8');
+          buf = Buffer.from(content.replace('</head>', `  <meta name="google-site-verification" content="${gscCode}">\n</head>`), 'utf8');
+        }
+        
         const useGz = /\bgzip\b/.test(req.headers['accept-encoding'] || '');
-        const out = useGz ? ent.gz : ent.buf;
+        const out = useGz ? zlib.gzipSync(buf, { level: 6 }) : buf;
+
         res.writeHead(200, {
           'Content-Type': 'text/html; charset=utf-8',
           'Content-Length': out.length,
