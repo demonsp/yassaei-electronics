@@ -166,7 +166,7 @@ act('print-page', () => { window.print(); });
 // ── کپچا «من ربات نیستم» ────────────────────────────────────
 export async function showCaptchaChallenge() {
   const { modal } = await import('./ui.mjs');
-  const { icon } = await import('./lib/util.mjs');
+  const { icon } = await import('./lib/dom.mjs');
   const { api } = await import('./lib/api.mjs');
   
   return new Promise((resolve) => {
