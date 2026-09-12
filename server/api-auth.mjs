@@ -459,34 +459,32 @@ export function registerAuth(router) {
   // ── اطلاعات کاربر ───────────────────────────────────────
   
   // KYC Upload Endpoint
-  router.post('/api/user/kyc', async (ctx) => {
-    const user = ctx.state.user;
-    if (!user) {
-      ctx.status = 401;
-      return;
-    }
-    const b = ctx.request.body;
+    router.post('/api/user/kyc', async (ctx) => {
+    ctx.requireUser();
+    const b = ctx.body || {};
     
-    // Validate National ID length (just for simulation)
-    // Connecting to mock "Shahkar / Saha" API
-    const isShahkarValid = Math.random() > 0.15; // 85% success rate for simulation
+    // Simulate Shahkar API
+    const isShahkarValid = Math.random() > 0.15;
     
-    user.kycStatus = 'pending';
-    user.kycMessage = isShahkarValid ? 'تایید اولیه از سامانه شاهکار دریافت شد. در انتظار بررسی سلفی توسط کارشناس.' : 'عدم تطابق اطلاعات در سامانه شاهکار. نیازمند بررسی دقیق کارشناس.';
-    
-    user.kycDocs = {
-      selfie: b.selfie,
-      idCard: b.idCard,
-      formDoc: b.formDoc,
-      shahkarValidated: isShahkarValid,
-      submittedAt: new Date().toISOString()
-    };
-    
-    import('./lib/telegram.mjs').then(tg => {
-      tg.tgBroadcast(ctx.state, `👤 <b>درخواست احراز هویت جدید (KYC)</b>\nکاربر: ${user.name || user.username} (${user.phone || ''})\nاستعلام سامانه شاهکار: ${isShahkarValid ? '✅ تطابق دارد' : '❌ مغایرت یا خطا'}\nجهت بررسی مدارک و تایید سلفی به پنل مدیریت مراجعه کنید.`);
-    }).catch(()=>{});
+    await db.tx((st) => {
+      const u = st.users.find(x => x.id === ctx.user.id);
+      if (!u) throw notFound();
+      u.kycStatus = 'pending';
+      u.kycMessage = isShahkarValid ? 'تایید اولیه از سامانه شاهکار دریافت شد. در انتظار بررسی سلفی توسط کارشناس.' : 'عدم تطابق اطلاعات در سامانه شاهکار. نیازمند بررسی دقیق کارشناس.';
+      u.kycDocs = {
+        selfie: b.selfie,
+        idCard: b.idCard,
+        formDoc: b.formDoc,
+        shahkarValidated: isShahkarValid,
+        submittedAt: new Date().toISOString()
+      };
+      
+      import('./lib/telegram.mjs').then(tg => {
+        tg.tgBroadcast(st, `👤 <b>درخواست احراز هویت جدید (KYC)</b>\nکاربر: ${u.name || u.username} (${u.phone || ''})\nاستعلام سامانه شاهکار: ${isShahkarValid ? '✅ تطابق دارد' : '❌ مغایرت یا خطا'}\nجهت بررسی مدارک و تایید سلفی به پنل مدیریت مراجعه کنید.`);
+      }).catch(()=>{});
+    });
 
-    ctx.body = { ok: true, status: 'pending' };
+    sendJson(ctx.res, 200, { ok: true, status: 'pending' });
   });
 
   router.get('/api/me', async (ctx) => {
