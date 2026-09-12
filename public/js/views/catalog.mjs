@@ -79,7 +79,7 @@ export async function render(ctx) {
     ${data.didYouMean ? h`<div class="notice notice-info mb">${icon('sparkles')}<span>${t('search.didYouMean')} <a class="section-link" href="${withQuery(ctx, { q: data.didYouMean })}">${data.didYouMean}</a></span></div>` : ''}
 
     <div class="catalog">
-      <aside class="filters card" id="filtersBox" hidden>
+      <aside class="filters card" id="filtersBox">
         <div class="row row-between mb-s">
           <strong>${t('catalog.filters')}</strong>
           <button type="button" class="link-btn" data-act="cat-clear">${t('catalog.f.clear')}</button>
@@ -232,9 +232,9 @@ import { act } from '../actions.mjs';
 act('cat-filters', (e, el) => {
   const box = document.getElementById('filtersBox');
   if (!box) return;
-  box.hidden = !box.hidden;
-  el.textContent = box.hidden ? t('catalog.showFilters') : t('catalog.hideFilters');
-  if (!box.hidden) box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  box.classList.toggle('force-show');
+  el.textContent = box.classList.contains('force-show') ? t('catalog.hideFilters') : t('catalog.showFilters');
+  if (box.classList.contains('force-show')) box.scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
 act('cat-clear', () => {
   const path = location.hash.includes('/category/') ? '#/products' : location.hash.split('?')[0];

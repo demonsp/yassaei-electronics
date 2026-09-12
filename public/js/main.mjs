@@ -158,8 +158,8 @@ function renderNav() {
 
   html += h`
     <div class="nav-more">
-      <button type="button" class="nav-link" data-dd aria-expanded="false" aria-haspopup="true">${icon('layers')} ${t('nav.allCategories')} ${icon('chevron-down')}</button>
-      <div class="nav-dd" data-ddbox hidden>
+      <a href="#/products" class="nav-link">${icon('layers')} ${t('nav.allCategories')} ${icon('chevron-down')}</a>
+      <div class="nav-dd hidden-default">
         ${topCats.map((c) => h`<a href="#/category/${c.id}">${icon(catIcon(c.glyph))} ${catName(c)}</a>`)}
         <a href="#/products">${icon('grid')} ${t('footer.allProducts')}</a>
       </div>
@@ -183,16 +183,8 @@ function renderNav() {
 
   nav.innerHTML = html;
 
-  const ddBtn = nav.querySelector('[data-dd]');
-  const ddBox = nav.querySelector('[data-ddbox]');
-  ddBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    ddBox.hidden = !ddBox.hidden;
-    ddBtn.setAttribute('aria-expanded', String(!ddBox.hidden));
-  });
-  document.addEventListener('click', (e) => {
-    if (!ddBox.hidden && !e.target.closest('.nav-more')) { ddBox.hidden = true; ddBtn.setAttribute('aria-expanded', 'false'); }
-  });
+  // Dropdown is handled by CSS hover now
+  
 }
 
 function renderFooter() {

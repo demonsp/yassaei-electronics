@@ -582,6 +582,7 @@ setInterval(async () => {
   // خودترمیمی هنگام راه‌اندازی: مجموعه‌های مفقود بازسازی می‌شوند
   const repaired = repairState(db.raw);
   normalizeSettings(db.raw);
+  if (db.raw.settings?.socials?.telegram?.includes("greenapple_shop_bot")) { db.raw.settings.socials.telegram = "https://t.me/yassaei_electronics_shop_bot"; db.markDirty(); }
   if (repaired) {
     console.warn(`[selfheal] ${repaired} collection(s) rebuilt at boot`);
     try { logAudit(null, 'system.selfheal', `${repaired} collections`, {}); } catch { /* noop */ }

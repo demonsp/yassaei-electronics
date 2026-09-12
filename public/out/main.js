@@ -5497,7 +5497,7 @@ async function render2(ctx) {
     ${data2.didYouMean ? html`<div class="notice notice-info mb">${icon("sparkles")}<span>${t("search.didYouMean")} <a class="section-link" href="${withQuery2(ctx, { q: data2.didYouMean })}">${data2.didYouMean}</a></span></div>` : ""}
 
     <div class="catalog">
-      <aside class="filters card" id="filtersBox" hidden>
+      <aside class="filters card" id="filtersBox">
         <div class="row row-between mb-s">
           <strong>${t("catalog.filters")}</strong>
           <button type="button" class="link-btn" data-act="cat-clear">${t("catalog.f.clear")}</button>
@@ -5660,9 +5660,9 @@ var init_catalog = __esm({
     act("cat-filters", (e, el2) => {
       const box = document.getElementById("filtersBox");
       if (!box) return;
-      box.hidden = !box.hidden;
-      el2.textContent = box.hidden ? t("catalog.showFilters") : t("catalog.hideFilters");
-      if (!box.hidden) box.scrollIntoView({ behavior: "smooth", block: "start" });
+      box.classList.toggle("force-show");
+      el2.textContent = box.classList.contains("force-show") ? t("catalog.hideFilters") : t("catalog.showFilters");
+      if (box.classList.contains("force-show")) box.scrollIntoView({ behavior: "smooth", block: "start" });
     });
     act("cat-clear", () => {
       const path = location.hash.includes("/category/") ? "#/products" : location.hash.split("?")[0];
@@ -15214,8 +15214,8 @@ function renderNav() {
   let html2 = links.map((l) => html`<a class="nav-link" data-nav-key="${l.key}" href="${l.href}">${icon(l.icon)} ${l.label}</a>`).join("");
   html2 += html`
     <div class="nav-more">
-      <button type="button" class="nav-link" data-dd aria-expanded="false" aria-haspopup="true">${icon("layers")} ${t("nav.allCategories")} ${icon("chevron-down")}</button>
-      <div class="nav-dd" data-ddbox hidden>
+      <a href="#/products" class="nav-link">${icon("layers")} ${t("nav.allCategories")} ${icon("chevron-down")}</a>
+      <div class="nav-dd hidden-default">
         ${topCats.map((c) => html`<a href="#/category/${c.id}">${icon(catIcon(c.glyph))} ${catName(c)}</a>`)}
         <a href="#/products">${icon("grid")} ${t("footer.allProducts")}</a>
       </div>
@@ -15234,19 +15234,6 @@ function renderNav() {
   const tickerAds = adInSlot("ticker");
   if (tickerAds.length) html2 += html`<span class="nav-link muted tiny">${tickerAds[0].title}</span>`;
   nav.innerHTML = html2;
-  const ddBtn = nav.querySelector("[data-dd]");
-  const ddBox = nav.querySelector("[data-ddbox]");
-  ddBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    ddBox.hidden = !ddBox.hidden;
-    ddBtn.setAttribute("aria-expanded", String(!ddBox.hidden));
-  });
-  document.addEventListener("click", (e) => {
-    if (!ddBox.hidden && !e.target.closest(".nav-more")) {
-      ddBox.hidden = true;
-      ddBtn.setAttribute("aria-expanded", "false");
-    }
-  });
 }
 function renderFooter() {
   const st = store();

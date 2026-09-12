@@ -1387,3 +1387,22 @@ html[data-variant="fresh"] .bottom-nav{border-radius:20px 20px 0 0}
   --accent: #d946ef; --accent-2: #c026d3; --accent-3: #f0abfc;
   --accent-soft: rgba(217,70,239,.16); --accent-ink: #fff;
 }
+
+/* Fix filters responsive */
+@media (max-width: 979px) {
+  #filtersBox { display: none; }
+  #filtersBox.force-show { display: block; }
+}
+
+/* Force filter button visibility correctly aligned with grid layout */
+@media (max-width: 979px) {
+  button[data-act="cat-filters"] { display: inline-flex !important; }
+}
+@media (min-width: 980px) {
+  button[data-act="cat-filters"] { display: none !important; }
+}
+
+/* Nav Hover for categories */
+.nav-more:hover .nav-dd { display: flex !important; flex-direction: column; }
+.nav-more:hover > a.nav-link { background: var(--surface-2); }
+.hidden-default { display: none; }
