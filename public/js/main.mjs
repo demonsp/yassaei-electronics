@@ -171,6 +171,7 @@ function renderNav() {
     { key: '/pages/stats', href: '#/stats', icon: 'chart', label: t('nav.stats'), show: feat('publicStats') },
     { key: '/price-check', href: '#/price-check', icon: 'barcode', label: t('priceCheck.title'), show: feat('priceCheckDevice') },
     { key: '/lottery', href: '#/lottery', icon: 'gift2', label: t('lot.nav'), show: true },
+    { key: '/pages/installments', href: '#/pages/installments', icon: 'credit-card', label: isFa() ? 'خرید اقساطی' : 'Installments', show: true },
     { key: '/pages/about', href: '#/pages/about', icon: 'store', label: t('nav.about'), show: true },
     { key: '/pages/contact', href: '#/pages/contact', icon: 'map', label: t('nav.contact'), show: true },
   ].filter((x) => x.show);
@@ -225,7 +226,7 @@ function renderFooter() {
     <li>${icon('chat')}<span>${t('contact.mobile')}: <a href="tel:${st.phone2 || st.phone}">${fmtTel(st.phone2 || '')}</a></span></li>
     <li>${icon('mail')}<span><a href="mailto:${st.email}">${st.email}</a></span></li>
     <li>${icon('pin')}<span>${isFa() ? (st.address || '') : (st.addressEn || st.address || '')}</span></li>
-    <li>${icon('clock')}<span>${t('footer.workingHours')}: ${(st.workingHours || []).map((w) => `${isFa() ? w.fa : w.en} ${isFa() ? w.time : w.timeEn}`).join(' · ')}</span></li>`;
+    <li>${icon('clock')}<span>${t('footer.workingHours')}: ${(st.workingHours || []).map((w) => `<bdi>${isFa() ? w.fa : w.en} ${isFa() ? w.time : w.timeEn}</bdi>`).join(' · ')}</span></li>`;
 
   // کروکی نقشه در پانویس
   qs('#fMinimap').innerHTML = minimapSvg();
@@ -353,6 +354,7 @@ function openMobileMenu() {
           <a class="nav-link" href="#/products">${icon('grid')} ${t('nav.products')}</a>
           ${S.categories.filter((c) => !c.parentId).map((c) => h`<a class="nav-link" href="#/category/${c.id}">${icon(catIcon(c.glyph))} ${catName(c)}</a>`)}
           <div class="divider"></div>
+          <a class="nav-link" href="#/pages/installments">${icon('card')} خرید اقساطی</a>
           <a class="nav-link" href="#/pages/about">${icon('store')} ${t('nav.about')}</a>
           <a class="nav-link" href="#/pages/contact">${icon('map')} ${t('nav.contact')}</a>
           ${S.me ? '' : h`<a class="btn btn-primary btn-block mt-s" href="#/auth">${icon('user')} ${t('nav.login')}</a>`}
