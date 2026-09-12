@@ -1497,3 +1497,8 @@ html[data-variant="fresh"] .bottom-nav{border-radius:20px 20px 0 0}
 }
 .mega-see-all:hover { opacity: 0.8; }
 .mega-see-all .ic { width: 16px; height: 16px; }
+
+/* Hide desktop nav and mega menu on mobile */
+@media (max-width: 900px) {
+  .mainnav { display: none !important; }
+}
