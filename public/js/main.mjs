@@ -160,9 +160,13 @@ function renderNav() {
   html += h`
     <div class="nav-more">
       <a href="#/products" class="nav-link">${icon('layers')} ${t('nav.allCategories')} ${icon('chevron-down')}</a>
-      <div class="nav-dd hidden-default">
-        ${topCats.map((c) => h`<a href="#/category/${c.id}">${icon(catIcon(c.glyph))} ${catName(c)}</a>`)}
-        <a href="#/products">${icon('grid')} ${t('footer.allProducts')}</a>
+      <div class="nav-dd mega-menu hidden-default">
+        <div class="mega-side">
+          ${S.categories.filter((c) => !c.parentId).map((c) => h`<a href="#/category/${c.id}" class="mega-side-link" data-cat="${c.id}">${icon(catIcon(c.glyph))} ${catName(c)}</a>`)}
+        </div>
+        <div class="mega-content">
+          <div class="mega-empty muted small">${t('nav.allCategories')}</div>
+        </div>
       </div>
     </div>`;
 
@@ -185,7 +189,44 @@ function renderNav() {
   nav.innerHTML = html;
 
   // Dropdown is handled by CSS hover now
-  
+  const sideLinks = nav.querySelectorAll('.mega-side-link');
+  const megaContent = nav.querySelector('.mega-content');
+  if (sideLinks.length && megaContent) {
+    sideLinks.forEach(link => {
+      link.addEventListener('mouseenter', () => {
+        sideLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+        const catId = link.dataset.cat;
+        
+        // Find subcategories if any
+        const subCats = S.categories.filter(c => c.parentId === catId);
+        
+        // Also let's show top brands
+        const brands = S.brands.slice(0, 10);
+        
+        let html = '<div class="mega-sub-grid">';
+        
+        if (subCats.length) {
+          html += '<div class="mega-sub-col"><h3>دسته‌بندی‌های زیرمجموعه</h3>';
+          subCats.forEach(sc => {
+            html += `<a href="#/category/${sc.id}">${catName(sc)}</a>`;
+          });
+          html += '</div>';
+        }
+        
+        // Just show brands as an example column to fill the space
+        html += '<div class="mega-sub-col"><h3>برندهای پرطرفدار</h3>';
+        brands.forEach(b => {
+          html += `<a href="#/products?brand=${b.id}">${brandName(b)}</a>`;
+        });
+        html += '</div>';
+        
+        html += '</div>';
+        
+        megaContent.innerHTML = html;
+      });
+    });
+  }
 }
 
 function renderFooter() {
