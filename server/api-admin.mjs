@@ -1005,7 +1005,7 @@ export function registerAdmin(router) {
 
   A('GET', '/api/admin/pages', 'pages.edit', async (ctx) => sendJson(ctx.res, 200, { ok: true, pages: ctx.state.pages }));
   A('PATCH', '/api/admin/pages/:key', 'pages.edit', async (ctx) => {
-    const key = V.oneOf(ctx.params.key, ['about', 'guide', 'service', 'faq', 'terms', 'privacy', 'insurance', 'ticketRules', 'bugReport', 'contact'], 'key');
+    const key = V.oneOf(ctx.params.key, ['about', 'guide', 'service', 'faq', 'terms', 'privacy', 'insurance', 'ticketRules', 'bugReport', 'contact', 'installments'], 'key');
     const out = await db.tx((st) => {
       const patch = ctx.body?.value && typeof ctx.body.value === 'object' ? ctx.body.value : {};
       if (Array.isArray(st.pages[key]) || key === 'faq') {
